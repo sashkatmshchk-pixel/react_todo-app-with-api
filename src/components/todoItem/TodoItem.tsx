@@ -1,0 +1,103 @@
+import React, { useState, useEffect, useRef } from 'react';
+import classNames from 'classnames';
+import { Todo } from '../../types/Todo';
+
+type Props = {
+  todo: Todo;
+  deleteTodo: (id: number) => void;
+  updateTodo: (todo: Todo) => void;
+  isLoading: boolean;
+};
+
+export const TodoItem: React.FC<Props> = ({ 
+  todo, 
+  deleteTodo, 
+  updateTodo, 
+  isLoading 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newTitle, setNewTitle] = useState(todo.title);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
+
+  const handleSubmit = (event?: React.FormEvent) => {
+    event?.preventDefault();
+    const trimmedTitle = newTitle.trim();
+
+    if (trimmedTitle === todo.title) {
+      setIsEditing(false);
+      return;
+    }
+
+    if (!trimmedTitle) {
+      deleteTodo(todo.id);
+      return;
+    }
+
+    updateTodo({ ...todo, title: trimmedTitle });
+    setIsEditing(false);
+  };
+
+  const handleKeyUp = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsEditing(false);
+      setNewTitle(todo.title);
+    }
+  };
+
+  return (
+    <div className={classNames('todo', { completed: todo.completed })}>
+      <label className="todo__status-label">
+        <input
+          type="checkbox"
+          className="todo__status"
+          checked={todo.completed}
+          onChange={() => updateTodo({ ...todo, completed: !todo.completed })}
+        />
+      </label>
+
+      {isEditing ? (
+        <form onSubmit={handleSubmit}>
+          <input
+            ref={inputRef}
+            type="text"
+            className="todo__title-field"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onBlur={() => handleSubmit()}
+            onKeyUp={handleKeyUp}
+          />
+        </form>
+      ) : (
+        <>
+          <span
+            className="todo__title"
+            onDoubleClick={() => {
+              setIsEditing(true);
+              setNewTitle(todo.title);
+            }}
+          >
+            {todo.title}
+          </span>
+          <button
+            type="button"
+            className="todo__remove"
+            onClick={() => deleteTodo(todo.id)}
+          >
+            ×
+          </button>
+        </>
+      )}
+
+      <div className={classNames('modal overlay', { 'is-active': isLoading })}>
+        <div className="modal-background has-background-white-ter" />
+        <div className="loader" />
+      </div>
+    </div>
+  );
+};
