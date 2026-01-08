@@ -22,7 +22,8 @@ export const Footer: React.FC<Props> = ({
         {activeCount} items left
       </span>
 
-      <nav className="filter">
+      {/* Добавили data-cy="Filter" на контейнер навигации */}
+      <nav className="filter" data-cy="Filter">
         <a
           data-cy="FilterLink"
           href="#/"
@@ -35,9 +36,7 @@ export const Footer: React.FC<Props> = ({
         <a
           data-cy="FilterLink"
           href="#/active"
-          className={classNames('filter__link', {
-            selected: filter === 'active',
-          })}
+          className={classNames('filter__link', { selected: filter === 'active' })}
           onClick={() => onFilterChange('active')}
         >
           Active
@@ -46,9 +45,7 @@ export const Footer: React.FC<Props> = ({
         <a
           data-cy="FilterLink"
           href="#/completed"
-          className={classNames('filter__link', {
-            selected: filter === 'completed',
-          })}
+          className={classNames('filter__link', { selected: filter === 'completed' })}
           onClick={() => onFilterChange('completed')}
         >
           Completed
