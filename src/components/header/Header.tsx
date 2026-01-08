@@ -4,14 +4,18 @@ import { Todo } from '../../types/Todo';
 
 type Props = {
   addTodo: (todo: Omit<Todo, 'id'>) => void;
+  showError: (error: string) => void; // Добавили функцию для показа ошибки
 };
 
-export const Header: React.FC<Props> = ({ addTodo }) => {
+export const Header: React.FC<Props> = ({ addTodo, showError }) => {
   const [title, setTitle] = useState('');
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    
+    // Если заголовок пустой — показываем ошибку и выходим
     if (!title.trim()) {
+      showError('Title should not be empty');
       return;
     }
 
