@@ -18,11 +18,11 @@ export const Footer: React.FC<Props> = ({
 }) => {
   return (
     <footer className="todoapp__footer" data-cy="Footer">
-      <span className="todo-count" data-cy="TodosCount">
+      {/* Исправлена опечатка в data-cy: TodosCount -> TodosCounter */}
+      <span className="todo-count" data-cy="TodosCounter">
         {activeCount} items left
       </span>
 
-      {/* Добавили data-cy="Filter" на контейнер навигации */}
       <nav className="filter" data-cy="Filter">
         <a
           data-cy="FilterLink"
