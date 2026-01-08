@@ -32,13 +32,11 @@ export const TodoItem: React.FC<Props> = ({
 
     if (trimmedTitle === todo.title) {
       setIsEditing(false);
-
       return;
     }
 
     if (!trimmedTitle) {
       deleteTodo(todo.id);
-
       return;
     }
 
@@ -77,7 +75,7 @@ export const TodoItem: React.FC<Props> = ({
             type="text"
             className="todo__title-field"
             value={newTitle}
-            onChange={e => setNewTitle(e.target.value)}
+            onChange={(e) => setNewTitle(e.target.value)}
             onBlur={() => handleSubmit()}
             onKeyUp={handleKeyUp}
           />
@@ -105,7 +103,10 @@ export const TodoItem: React.FC<Props> = ({
         </>
       )}
 
-      <div className={classNames('modal overlay', { 'is-active': isLoading })}>
+      <div
+        data-cy="TodoLoader"
+        className={classNames('modal overlay', { 'is-active': isLoading })}
+      >
         <div className="modal-background has-background-white-ter" />
         <div className="loader" />
       </div>
