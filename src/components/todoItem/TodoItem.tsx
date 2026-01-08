@@ -32,13 +32,11 @@ export const TodoItem: React.FC<Props> = ({
 
     if (trimmedTitle === todo.title) {
       setIsEditing(false);
-
       return;
     }
 
     if (!trimmedTitle) {
       deleteTodo(todo.id);
-
       return;
     }
 
@@ -54,10 +52,14 @@ export const TodoItem: React.FC<Props> = ({
   };
 
   return (
-    <div className={classNames('todo', { completed: todo.completed })}>
+    <div
+      data-cy="Todo"
+      className={classNames('todo', { completed: todo.completed })}
+    >
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="todo__status-label">
         <input
+          data-cy="TodoStatus"
           type="checkbox"
           className="todo__status"
           checked={todo.completed}
@@ -68,11 +70,12 @@ export const TodoItem: React.FC<Props> = ({
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <input
+            data-cy="TodoTitleField"
             ref={inputRef}
             type="text"
             className="todo__title-field"
             value={newTitle}
-            onChange={e => setNewTitle(e.target.value)}
+            onChange={(e) => setNewTitle(e.target.value)}
             onBlur={() => handleSubmit()}
             onKeyUp={handleKeyUp}
           />
@@ -80,6 +83,7 @@ export const TodoItem: React.FC<Props> = ({
       ) : (
         <>
           <span
+            data-cy="TodoTitle"
             className="todo__title"
             onDoubleClick={() => {
               setIsEditing(true);
@@ -91,6 +95,7 @@ export const TodoItem: React.FC<Props> = ({
           <button
             type="button"
             className="todo__remove"
+            data-cy="TodoDelete"
             onClick={() => deleteTodo(todo.id)}
           >
             ×

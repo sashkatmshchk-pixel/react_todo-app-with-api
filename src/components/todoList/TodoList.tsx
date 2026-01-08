@@ -19,7 +19,7 @@ export const TodoList: React.FC<Props> = ({
   processingIds,
 }) => {
   return (
-    <section className="todoapp__main">
+    <section className="todoapp__main" data-cy="TodoList">
       {todoList.map(todo => (
         <TodoItem
           key={todo.id}
@@ -29,7 +29,7 @@ export const TodoList: React.FC<Props> = ({
           isLoading={processingIds.includes(todo.id)}
         />
       ))}
-
+      
       {todoTemp && (
         <TodoItem
           todo={todoTemp}
