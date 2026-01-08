@@ -1,23 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line import/extensions
 import { Todo } from '../../types/Todo';
 
 type Props = {
-  addTodo: (todo: Omit<Todo, 'id'>) => Promise<void>; // Изменили тип на Promise
+  addTodo: (todo: Omit<Todo, 'id'>) => Promise<void>;
   showError: (error: string) => void;
   isLoading: boolean;
+  inputRef: React.RefObject<HTMLInputElement>; // 1. Принимаем ref снаружи
 };
 
-export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
+export const Header: React.FC<Props> = ({
+  addTodo,
+  showError,
+  isLoading,
+  inputRef, // Получаем его здесь
+}) => {
   const [title, setTitle] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isLoading) {
-      // Убрали setTitle('') отсюда! Очищаем только при успехе.
       inputRef.current?.focus();
     }
-  }, [isLoading]);
+  }, [isLoading, inputRef]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -27,18 +31,16 @@ export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
       return;
     }
 
-    // Вызываем addTodo и ждем результат
     addTodo({
       userId: 0,
       title: title.trim(),
       completed: false,
     })
       .then(() => {
-        setTitle(''); // Очищаем ТОЛЬКО если успешно
+        setTitle('');
       })
       .catch(() => {
-        // Если ошибка — ничего не делаем, текст остается в поле
-        // Ошибку покажет ErrorMessage в App
+        // Error is handled in App
       });
   };
 
@@ -48,7 +50,7 @@ export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
         <input
           data-cy="NewTodoField"
           disabled={isLoading}
-          ref={inputRef}
+          ref={inputRef} // 2. Привязываем полученный ref
           type="text"
           className="todoapp__new-todo"
           placeholder="What needs to be done?"

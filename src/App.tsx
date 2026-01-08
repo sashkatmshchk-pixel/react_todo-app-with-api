@@ -1,5 +1,5 @@
 /* eslint-disable import/extensions */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react'; // Добавили useRef
 import { UserWarning } from './UserWarning';
 import { getTodos, addTodo, deleteTodo, updateTodo } from './api/todos';
 // eslint-disable-next-line import/extensions
@@ -17,6 +17,9 @@ export const App: React.FC = () => {
   const [filter, setFilter] = useState('all');
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [processingIds, setProcessingIds] = useState<number[]>([]);
+  
+  // 1. Создаем реф для поля ввода
+  const newTodoField = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (errorMessage) {
@@ -40,7 +43,6 @@ export const App: React.FC = () => {
     setTempTodo(newTodo);
     setProcessingIds(prev => [...prev, tempId]);
 
-    // Важно: возвращаем Promise, чтобы Header знал о результате
     return addTodo(newTodo)
       .then((createdTodo) => {
         setTodos(current => [...current, createdTodo]);
@@ -49,7 +51,7 @@ export const App: React.FC = () => {
       .catch(() => {
         setErrorMessage('Unable to add a todo');
         setTempTodo(null);
-        throw new Error('Error adding todo'); // Прокидываем ошибку, чтобы Header не очистил поле
+        throw new Error('Error adding todo');
       })
       .finally(() => {
         setProcessingIds(prev => prev.filter(id => id !== tempId));
@@ -67,6 +69,8 @@ export const App: React.FC = () => {
       })
       .finally(() => {
         setProcessingIds(prev => prev.filter(pId => pId !== id));
+        // 2. Возвращаем фокус в поле после удаления
+        newTodoField.current?.focus();
       });
   };
 
@@ -109,6 +113,7 @@ export const App: React.FC = () => {
           addTodo={(data) => handleAddTodo({ ...data, userId: USER_ID })} 
           showError={setErrorMessage}
           isLoading={!!tempTodo}
+          inputRef={newTodoField} // 3. Передаем реф в Header
         />
 
         {(todos.length > 0 || tempTodo) && (
