@@ -105,7 +105,8 @@ export const App: React.FC = () => {
       <div className="todoapp__content">
         <Header 
           addTodo={(data) => handleAddTodo({ ...data, userId: USER_ID })} 
-          showError={setErrorMessage} // <-- Вот это мы добавили!
+          showError={setErrorMessage}
+          isLoading={!!tempTodo} // <-- Передаем статус загрузки (если есть tempTodo, значит грузим)
         />
 
         {(todos.length > 0 || tempTodo) && (
