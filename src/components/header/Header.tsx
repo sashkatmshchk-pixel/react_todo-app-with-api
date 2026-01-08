@@ -3,19 +3,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Todo } from '../../types/Todo';
 
 type Props = {
-  addTodo: (todo: Omit<Todo, 'id'>) => void;
+  addTodo: (todo: Omit<Todo, 'id'>) => Promise<void>; // Изменили тип на Promise
   showError: (error: string) => void;
   isLoading: boolean;
 };
 
 export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
   const [title, setTitle] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null); // 1. Создаем ссылку на элемент
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isLoading) {
-      setTitle('');
-      // 2. Когда загрузка закончилась, возвращаем фокус в поле
+      // Убрали setTitle('') отсюда! Очищаем только при успехе.
       inputRef.current?.focus();
     }
   }, [isLoading]);
@@ -28,11 +27,19 @@ export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
       return;
     }
 
+    // Вызываем addTodo и ждем результат
     addTodo({
       userId: 0,
       title: title.trim(),
       completed: false,
-    });
+    })
+      .then(() => {
+        setTitle(''); // Очищаем ТОЛЬКО если успешно
+      })
+      .catch(() => {
+        // Если ошибка — ничего не делаем, текст остается в поле
+        // Ошибку покажет ErrorMessage в App
+      });
   };
 
   return (
@@ -41,7 +48,7 @@ export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
         <input
           data-cy="NewTodoField"
           disabled={isLoading}
-          ref={inputRef} // 3. Привязываем ссылку к input
+          ref={inputRef}
           type="text"
           className="todoapp__new-todo"
           placeholder="What needs to be done?"
