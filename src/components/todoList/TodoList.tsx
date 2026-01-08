@@ -29,7 +29,7 @@ export const TodoList: React.FC<Props> = ({
           isLoading={processingIds.includes(todo.id)}
         />
       ))}
-      
+
       {todoTemp && (
         <TodoItem
           todo={todoTemp}

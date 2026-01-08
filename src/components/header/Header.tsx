@@ -32,7 +32,7 @@ export const Header: React.FC<Props> = ({ addTodo }) => {
           className="todoapp__new-todo"
           placeholder="What needs to be done?"
           value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          onChange={event => setTitle(event.target.value)}
         />
       </form>
     </header>
