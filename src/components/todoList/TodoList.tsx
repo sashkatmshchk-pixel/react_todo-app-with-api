@@ -1,6 +1,7 @@
 import React from 'react';
-import { Todo } from '../../types/Todo';
 import { TodoItem } from '../todoItem/TodoItem';
+// eslint-disable-next-line import/extensions
+import { Todo } from '../../types/Todo';
 
 type Props = {
   todoList: Todo[];
@@ -28,13 +29,13 @@ export const TodoList: React.FC<Props> = ({
           isLoading={processingIds.includes(todo.id)}
         />
       ))}
-      
+
       {todoTemp && (
         <TodoItem
           todo={todoTemp}
           deleteTodo={deleteTodo}
           updateTodo={updateTodo}
-          isLoading={true}
+          isLoading={processingIds.includes(todoTemp.id)}
         />
       )}
     </section>

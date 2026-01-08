@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
+// eslint-disable-next-line import/extensions
 import { Todo } from '../../types/Todo';
 
 type Props = {
@@ -9,11 +10,11 @@ type Props = {
   isLoading: boolean;
 };
 
-export const TodoItem: React.FC<Props> = ({ 
-  todo, 
-  deleteTodo, 
-  updateTodo, 
-  isLoading 
+export const TodoItem: React.FC<Props> = ({
+  todo,
+  deleteTodo,
+  updateTodo,
+  isLoading,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(todo.title);
@@ -31,11 +32,13 @@ export const TodoItem: React.FC<Props> = ({
 
     if (trimmedTitle === todo.title) {
       setIsEditing(false);
+
       return;
     }
 
     if (!trimmedTitle) {
       deleteTodo(todo.id);
+
       return;
     }
 
@@ -52,6 +55,7 @@ export const TodoItem: React.FC<Props> = ({
 
   return (
     <div className={classNames('todo', { completed: todo.completed })}>
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="todo__status-label">
         <input
           type="checkbox"
@@ -68,7 +72,7 @@ export const TodoItem: React.FC<Props> = ({
             type="text"
             className="todo__title-field"
             value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
+            onChange={e => setNewTitle(e.target.value)}
             onBlur={() => handleSubmit()}
             onKeyUp={handleKeyUp}
           />

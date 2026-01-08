@@ -1,5 +1,6 @@
-import { Todo } from '../types/Todo';
 import { client } from '../utils/fetchClient';
+// eslint-disable-next-line import/extensions
+import { Todo } from '../types/Todo';
 
 export const getTodos = (userId: number) => {
   return client.get<Todo[]>(`/todos?userId=${userId}`);
