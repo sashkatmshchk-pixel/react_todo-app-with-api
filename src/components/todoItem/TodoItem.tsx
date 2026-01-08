@@ -32,11 +32,13 @@ export const TodoItem: React.FC<Props> = ({
 
     if (trimmedTitle === todo.title) {
       setIsEditing(false);
+
       return;
     }
 
     if (!trimmedTitle) {
       deleteTodo(todo.id);
+
       return;
     }
 
@@ -84,7 +86,7 @@ export const TodoItem: React.FC<Props> = ({
             type="text"
             className="todo__title-field"
             value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
+            onChange={e => setNewTitle(e.target.value)}
             onBlur={() => handleSubmit()}
             onKeyUp={handleKeyUp}
           />
