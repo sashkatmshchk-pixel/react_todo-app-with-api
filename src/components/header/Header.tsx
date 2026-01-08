@@ -25,9 +25,10 @@ export const Header: React.FC<Props> = ({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     if (!title.trim()) {
       showError('Title should not be empty');
+
       return;
     }
 
@@ -55,7 +56,7 @@ export const Header: React.FC<Props> = ({
           className="todoapp__new-todo"
           placeholder="What needs to be done?"
           value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          onChange={event => setTitle(event.target.value)}
           autoFocus
         />
       </form>

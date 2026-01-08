@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { TodoItem } from '../todoItem/TodoItem';
 // eslint-disable-next-line import/extensions
 import { Todo } from '../../types/Todo';
@@ -9,6 +10,8 @@ type Props = {
   deleteTodo: (id: number) => void;
   updateTodo: (todo: Todo) => void;
   processingIds: number[];
+  onToggleAll: () => void;      // 1. Новая функция
+  isAllCompleted: boolean;      // 2. Новый флаг
 };
 
 export const TodoList: React.FC<Props> = ({
@@ -17,9 +20,19 @@ export const TodoList: React.FC<Props> = ({
   deleteTodo,
   updateTodo,
   processingIds,
+  onToggleAll,
+  isAllCompleted,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
+      {/* 3. Добавляем кнопку Toggle All */}
+      <button
+        type="button"
+        className={classNames('todoapp__toggle-all', { active: isAllCompleted })}
+        data-cy="ToggleAllButton"
+        onClick={onToggleAll}
+      />
+
       {todoList.map(todo => (
         <TodoItem
           key={todo.id}
@@ -29,7 +42,7 @@ export const TodoList: React.FC<Props> = ({
           isLoading={processingIds.includes(todo.id)}
         />
       ))}
-
+      
       {todoTemp && (
         <TodoItem
           todo={todoTemp}

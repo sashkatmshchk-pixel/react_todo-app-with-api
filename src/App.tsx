@@ -1,5 +1,5 @@
 /* eslint-disable import/extensions */
-import React, { useState, useEffect, useMemo, useRef } from 'react'; // Добавили useRef
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, addTodo, deleteTodo, updateTodo } from './api/todos';
 // eslint-disable-next-line import/extensions
@@ -18,7 +18,6 @@ export const App: React.FC = () => {
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [processingIds, setProcessingIds] = useState<number[]>([]);
   
-  // 1. Создаем реф для поля ввода
   const newTodoField = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -69,7 +68,6 @@ export const App: React.FC = () => {
       })
       .finally(() => {
         setProcessingIds(prev => prev.filter(pId => pId !== id));
-        // 2. Возвращаем фокус в поле после удаления
         newTodoField.current?.focus();
       });
   };
@@ -88,6 +86,21 @@ export const App: React.FC = () => {
       .finally(() => {
         setProcessingIds(prev => prev.filter(id => id !== updatedTodo.id));
       });
+  };
+
+  // Логика Toggle All
+  const isAllCompleted = todos.length > 0 && todos.every(todo => todo.completed);
+
+  const handleToggleAll = () => {
+    // Если все завершены -> делаем активными. Иначе -> делаем все завершенными.
+    const targetStatus = !isAllCompleted;
+    
+    // Обновляем только те, у которых статус отличается
+    todos.forEach(todo => {
+      if (todo.completed !== targetStatus) {
+        handleUpdateTodo({ ...todo, completed: targetStatus });
+      }
+    });
   };
 
   const filteredTodos = useMemo(() => {
@@ -113,7 +126,7 @@ export const App: React.FC = () => {
           addTodo={(data) => handleAddTodo({ ...data, userId: USER_ID })} 
           showError={setErrorMessage}
           isLoading={!!tempTodo}
-          inputRef={newTodoField} // 3. Передаем реф в Header
+          inputRef={newTodoField}
         />
 
         {(todos.length > 0 || tempTodo) && (
@@ -123,6 +136,8 @@ export const App: React.FC = () => {
             deleteTodo={handleDeleteTodo}
             updateTodo={handleUpdateTodo}
             processingIds={processingIds}
+            onToggleAll={handleToggleAll} // Передаем функцию
+            isAllCompleted={isAllCompleted} // Передаем состояние
           />
         )}
 
