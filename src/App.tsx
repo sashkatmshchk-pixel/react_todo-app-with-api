@@ -37,11 +37,12 @@ export const App: React.FC = () => {
   const handleAddTodo = ({ title, userId, completed }: Omit<Todo, 'id'>) => {
     const tempId = -1;
     const newTodo = { id: tempId, title, userId, completed };
+
     setTempTodo(newTodo);
     setProcessingIds(prev => [...prev, tempId]);
 
     addTodo(newTodo)
-      .then((createdTodo) => {
+      .then(createdTodo => {
         setTodos(current => [...current, createdTodo]);
         setTempTodo(null);
       })
@@ -71,9 +72,11 @@ export const App: React.FC = () => {
   const handleUpdateTodo = (updatedTodo: Todo) => {
     setProcessingIds(prev => [...prev, updatedTodo.id]);
     updateTodo(updatedTodo)
-      .then((todoFromServer) => {
+      .then(todoFromServer => {
         setTodos(current =>
-          current.map(todo => (todo.id === updatedTodo.id ? todoFromServer : todo))
+          current.map(todo =>
+            todo.id === updatedTodo.id ? todoFromServer : todo,
+          ),
         );
       })
       .catch(() => {
@@ -86,8 +89,14 @@ export const App: React.FC = () => {
 
   const filteredTodos = useMemo(() => {
     return todos.filter(todo => {
-      if (filter === 'active') return !todo.completed;
-      if (filter === 'completed') return todo.completed;
+      if (filter === 'active') {
+        return !todo.completed;
+      }
+
+      if (filter === 'completed') {
+        return todo.completed;
+      }
+
       return true;
     });
   }, [todos, filter]);
@@ -103,8 +112,8 @@ export const App: React.FC = () => {
     <div className="todoapp">
       <h1 className="todoapp__title">todos</h1>
       <div className="todoapp__content">
-        <Header 
-          addTodo={(data) => handleAddTodo({ ...data, userId: USER_ID })} 
+        <Header
+          addTodo={data => handleAddTodo({ ...data, userId: USER_ID })}
           showError={setErrorMessage}
           isLoading={!!tempTodo} // <-- Передаем статус загрузки (если есть tempTodo, значит грузим)
         />
@@ -126,15 +135,17 @@ export const App: React.FC = () => {
             filter={filter}
             onFilterChange={setFilter}
             onClearCompleted={() => {
-               todos.filter(t => t.completed).forEach(t => handleDeleteTodo(t.id));
+              todos
+                .filter(t => t.completed)
+                .forEach(t => handleDeleteTodo(t.id));
             }}
           />
         )}
       </div>
 
-      <ErrorMessage 
-        error={errorMessage} 
-        hideError={() => setErrorMessage('')} 
+      <ErrorMessage
+        error={errorMessage}
+        hideError={() => setErrorMessage('')}
       />
     </div>
   );

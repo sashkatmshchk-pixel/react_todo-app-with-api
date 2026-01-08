@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // eslint-disable-next-line import/extensions
 import { Todo } from '../../types/Todo';
 
 type Props = {
   addTodo: (todo: Omit<Todo, 'id'>) => void;
   showError: (error: string) => void;
-  isLoading: boolean; // 1. Добавляем новый проп
+  isLoading: boolean;
 };
 
 export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
   const [title, setTitle] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null); // 1. Создаем ссылку на элемент
 
-  // 2. Если загрузка закончилась (успешно), очищаем поле
   useEffect(() => {
     if (!isLoading) {
       setTitle('');
+      // 2. Когда загрузка закончилась, возвращаем фокус в поле
+      inputRef.current?.focus();
     }
   }, [isLoading]);
 
@@ -31,7 +33,6 @@ export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
       title: title.trim(),
       completed: false,
     });
-    // setTitle('') убрали отсюда, теперь это делает useEffect после успеха
   };
 
   return (
@@ -39,7 +40,8 @@ export const Header: React.FC<Props> = ({ addTodo, showError, isLoading }) => {
       <form onSubmit={handleSubmit}>
         <input
           data-cy="NewTodoField"
-          disabled={isLoading} // 3. Блокируем поле при загрузке
+          disabled={isLoading}
+          ref={inputRef} // 3. Привязываем ссылку к input
           type="text"
           className="todoapp__new-todo"
           placeholder="What needs to be done?"
