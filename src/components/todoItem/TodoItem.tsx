@@ -5,8 +5,8 @@ import { Todo } from '../../types/Todo';
 
 type Props = {
   todo: Todo;
-  deleteTodo: (id: number) => void;
-  updateTodo: (todo: Todo) => void;
+  deleteTodo: (id: number) => Promise<void>; // Изменили тип на Promise
+  updateTodo: (todo: Todo) => Promise<void>; // Изменили тип на Promise
   isLoading: boolean;
 };
 
@@ -32,18 +32,25 @@ export const TodoItem: React.FC<Props> = ({
 
     if (trimmedTitle === todo.title) {
       setIsEditing(false);
-
       return;
     }
 
     if (!trimmedTitle) {
       deleteTodo(todo.id);
-
       return;
     }
 
-    updateTodo({ ...todo, title: trimmedTitle });
-    setIsEditing(false);
+    // Ждем выполнения запроса
+    updateTodo({ ...todo, title: trimmedTitle })
+      .then(() => {
+        setIsEditing(false); // Закрываем ТОЛЬКО при успехе
+      })
+      .catch(() => {
+        // При ошибке:
+        // 1. Форма остается открытой (не вызываем setIsEditing(false))
+        // 2. Фокус возвращается в поле ввода
+        inputRef.current?.focus();
+      });
   };
 
   const handleKeyUp = (event: React.KeyboardEvent) => {
@@ -77,7 +84,7 @@ export const TodoItem: React.FC<Props> = ({
             type="text"
             className="todo__title-field"
             value={newTitle}
-            onChange={e => setNewTitle(e.target.value)}
+            onChange={(e) => setNewTitle(e.target.value)}
             onBlur={() => handleSubmit()}
             onKeyUp={handleKeyUp}
           />

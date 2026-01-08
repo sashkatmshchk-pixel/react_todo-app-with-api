@@ -10,8 +10,8 @@ type Props = {
   deleteTodo: (id: number) => void;
   updateTodo: (todo: Todo) => void;
   processingIds: number[];
-  onToggleAll: () => void;      // 1. Новая функция
-  isAllCompleted: boolean;      // 2. Новый флаг
+  onToggleAll: () => void; // 1. Новая функция
+  isAllCompleted: boolean; // 2. Новый флаг
 };
 
 export const TodoList: React.FC<Props> = ({
@@ -28,7 +28,9 @@ export const TodoList: React.FC<Props> = ({
       {/* 3. Добавляем кнопку Toggle All */}
       <button
         type="button"
-        className={classNames('todoapp__toggle-all', { active: isAllCompleted })}
+        className={classNames('todoapp__toggle-all', {
+          active: isAllCompleted,
+        })}
         data-cy="ToggleAllButton"
         onClick={onToggleAll}
       />
@@ -42,7 +44,7 @@ export const TodoList: React.FC<Props> = ({
           isLoading={processingIds.includes(todo.id)}
         />
       ))}
-      
+
       {todoTemp && (
         <TodoItem
           todo={todoTemp}

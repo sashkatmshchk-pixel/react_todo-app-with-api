@@ -59,12 +59,15 @@ export const App: React.FC = () => {
 
   const handleDeleteTodo = (id: number) => {
     setProcessingIds(prev => [...prev, id]);
-    deleteTodo(id)
+    
+    // 1. Добавили return и throw error
+    return deleteTodo(id)
       .then(() => {
         setTodos(current => current.filter(todo => todo.id !== id));
       })
       .catch(() => {
         setErrorMessage('Unable to delete a todo');
+        throw new Error('Error deleting todo');
       })
       .finally(() => {
         setProcessingIds(prev => prev.filter(pId => pId !== id));
@@ -74,7 +77,9 @@ export const App: React.FC = () => {
 
   const handleUpdateTodo = (updatedTodo: Todo) => {
     setProcessingIds(prev => [...prev, updatedTodo.id]);
-    updateTodo(updatedTodo)
+    
+    // 2. Добавили return и throw error
+    return updateTodo(updatedTodo)
       .then((todoFromServer) => {
         setTodos(current =>
           current.map(todo => (todo.id === updatedTodo.id ? todoFromServer : todo))
@@ -82,20 +87,16 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setErrorMessage('Unable to update a todo');
+        throw new Error('Error updating todo');
       })
       .finally(() => {
         setProcessingIds(prev => prev.filter(id => id !== updatedTodo.id));
       });
   };
 
-  // Логика Toggle All
-  const isAllCompleted = todos.length > 0 && todos.every(todo => todo.completed);
-
   const handleToggleAll = () => {
-    // Если все завершены -> делаем активными. Иначе -> делаем все завершенными.
-    const targetStatus = !isAllCompleted;
+    const targetStatus = !todos.every(todo => todo.completed);
     
-    // Обновляем только те, у которых статус отличается
     todos.forEach(todo => {
       if (todo.completed !== targetStatus) {
         handleUpdateTodo({ ...todo, completed: targetStatus });
@@ -136,8 +137,8 @@ export const App: React.FC = () => {
             deleteTodo={handleDeleteTodo}
             updateTodo={handleUpdateTodo}
             processingIds={processingIds}
-            onToggleAll={handleToggleAll} // Передаем функцию
-            isAllCompleted={isAllCompleted} // Передаем состояние
+            onToggleAll={handleToggleAll}
+            isAllCompleted={todos.length > 0 && todos.every(todo => todo.completed)}
           />
         )}
 
