@@ -18,14 +18,13 @@ export const Footer: React.FC<Props> = ({
 }) => {
   return (
     <footer className="todoapp__footer" data-cy="Footer">
-      {/* Исправлена опечатка в data-cy: TodosCount -> TodosCounter */}
       <span className="todo-count" data-cy="TodosCounter">
         {activeCount} items left
       </span>
 
       <nav className="filter" data-cy="Filter">
         <a
-          data-cy="FilterLink"
+          data-cy="FilterLinkAll" // Уникальное имя для All
           href="#/"
           className={classNames('filter__link', { selected: filter === 'all' })}
           onClick={() => onFilterChange('all')}
@@ -34,7 +33,7 @@ export const Footer: React.FC<Props> = ({
         </a>
 
         <a
-          data-cy="FilterLink"
+          data-cy="FilterLinkActive" // Уникальное имя для Active
           href="#/active"
           className={classNames('filter__link', { selected: filter === 'active' })}
           onClick={() => onFilterChange('active')}
@@ -43,7 +42,7 @@ export const Footer: React.FC<Props> = ({
         </a>
 
         <a
-          data-cy="FilterLink"
+          data-cy="FilterLinkCompleted" // Уникальное имя для Completed
           href="#/completed"
           className={classNames('filter__link', { selected: filter === 'completed' })}
           onClick={() => onFilterChange('completed')}
